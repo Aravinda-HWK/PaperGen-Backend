@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto';
+import { AuthDto } from './dto/auth.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -12,16 +12,16 @@ export class AuthService {
     const hash = await argon.hash(dto.password);
     // Create the user record in the database
     try {
-      const user = await this.prisma.user.create({
+      const teacher = await this.prisma.teacher.create({
         data: {
           email: dto.email,
-          hash,
+          password: hash,
         },
       });
 
       // Return the user record
-      delete user.hash;
-      return user;
+      delete teacher.password;
+      return teacher;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -35,22 +35,22 @@ export class AuthService {
 
   async signin(dto: AuthDto) {
     // find the user by email
-    const user = await this.prisma.user.findUnique({
+    const teacher = await this.prisma.teacher.findUnique({
       where: {
         email: dto.email,
       },
     });
 
     // if the user is not found, throw an error
-    if (!user) {
+    if (!teacher) {
       throw new ForbiddenException('Invalid credentials');
     }
     // if the user is found, compare the password hashes
-    const match = await argon.verify(user.hash, dto.password);
+    const match = await argon.verify(teacher.password, dto.password);
     // if the password hashes match, return the user record
     if (match) {
-      delete user.hash;
-      return user;
+      delete teacher.password;
+      return teacher;
     }
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');
