@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,16 +7,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Teacher {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email String @unique
-  password String
-
-  firstName String?
-  lastName String?
-  photo Bytes?
+model teacher {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  email       String   @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  photo       Bytes?
   description String?
+  classrooms  classroom[]
+}
+
+model student {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  email       String   @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  photo       Bytes?
+  description String?
+  classrooms  classroom[]
+  results     result[]
+}
+
+model classroom {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  teacherId   Int
+  teacher     teacher  @relation(fields: [teacherId], references: [id])
+  students    student[]
+  papers      paper[]
+}
+
+model paper {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  numberOfQuestions Int
+  startTime   DateTime
+  endTime     DateTime
+  classroomId Int
+  classroom   classroom @relation(fields: [classroomId], references: [id])
+  questions   question[]
+  results     result[]
+}
+
+model question {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String
+  paperId     Int
+  paper       paper    @relation(fields: [paperId], references: [id])
+  sampleAnswer String[]
+  correctAnswer String
+}
+model result {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  studentId   Int
+  student     student  @relation(fields: [studentId], references: [id])
+  paperId     Int
+  paper       paper    @relation(fields: [paperId], references: [id])
+  score       Int
+  answers     String[]
 }
