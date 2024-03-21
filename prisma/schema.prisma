@@ -42,4 +42,30 @@ model classroom {
   teacherId   Int
   teacher     teacher  @relation(fields: [teacherId], references: [id])
   students    student[]
+  papers      paper[]
+}
+
+model paper {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  numberOfQuestions Int
+  startTime   DateTime
+  endTime     DateTime
+  classroomId Int
+  classroom   classroom @relation(fields: [classroomId], references: [id])
+  questions   question[]
+}
+
+model question {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String
+  paperId     Int
+  paper       paper    @relation(fields: [paperId], references: [id])
+  sampleAnswer String[]
+  correctAnswer String
 }
