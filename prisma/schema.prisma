@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Teacher {
+model teacher {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -17,9 +17,10 @@ model Teacher {
   lastName    String?
   photo       Bytes?
   description String?
+  classrooms  classroom[]
 }
 
-model Student {
+model student {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -29,4 +30,16 @@ model Student {
   lastName    String?
   photo       Bytes?
   description String?
+  classrooms  classroom[]
+}
+
+model classroom {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  teacherId   Int
+  teacher     teacher  @relation(fields: [teacherId], references: [id])
+  students    student[]
 }
