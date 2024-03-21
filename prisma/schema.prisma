@@ -31,6 +31,7 @@ model student {
   photo       Bytes?
   description String?
   classrooms  classroom[]
+  results     result[]
 }
 
 model classroom {
@@ -57,6 +58,7 @@ model paper {
   classroomId Int
   classroom   classroom @relation(fields: [classroomId], references: [id])
   questions   question[]
+  results     result[]
 }
 
 model question {
@@ -68,4 +70,15 @@ model question {
   paper       paper    @relation(fields: [paperId], references: [id])
   sampleAnswer String[]
   correctAnswer String
+}
+model result {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  studentId   Int
+  student     student  @relation(fields: [studentId], references: [id])
+  paperId     Int
+  paper       paper    @relation(fields: [paperId], references: [id])
+  score       Int
+  answers     String[]
 }
