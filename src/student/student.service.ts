@@ -8,7 +8,6 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 export class StudentService {
   constructor(private prisma: PrismaService) {}
   async signup(dto: StudentDto) {
-    console.log('dto', dto);
     // Generate the password hash (salt + hash)
     const hash = await argon.hash(dto.password);
     // Create the user record in the database
@@ -55,5 +54,38 @@ export class StudentService {
     }
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');
+  }
+
+  // Find a student by id
+  async findOne(id: number) {
+    const studentId = parseInt(id.toString());
+    try {
+      const student = await this.prisma.student.findUnique({
+        where: {
+          id: studentId,
+        },
+      });
+      // Remove the password field from the student record
+      delete student.password;
+      return student;
+    } catch (error) {
+      throw new ForbiddenException('Student not found');
+    }
+  }
+
+  // Get the list of all students
+  async findAll() {
+    try {
+      // Find all students
+
+      const students = await this.prisma.student.findMany();
+      // Remove the password field from each student record
+      return students.map((student) => {
+        delete student.password;
+        return student;
+      });
+    } catch (error) {
+      throw new ForbiddenException('Students not found');
+    }
   }
 }
