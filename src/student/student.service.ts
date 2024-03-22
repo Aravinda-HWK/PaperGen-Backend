@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { StudentDto } from './dto/student.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as fs from 'fs';
 
 @Injectable()
 export class StudentService {
@@ -108,6 +109,7 @@ export class StudentService {
           firstName: dto.firstName,
           lastName: dto.lastName,
           description: dto.description,
+          photo: dto.photo.buffer,
         },
       });
       // Remove the password field from the student record
