@@ -88,4 +88,33 @@ export class StudentService {
       throw new ForbiddenException('Students not found');
     }
   }
+
+  // Update a student by id
+  async update(dto: any) {
+    const studentId = parseInt(dto.id.toString());
+    // Generate the password hash (salt + hash)
+    if (dto.password) {
+      dto.password = await argon.hash(dto.password);
+    }
+    try {
+      // Update the student record
+      const student = await this.prisma.student.update({
+        where: {
+          id: studentId,
+        },
+        data: {
+          email: dto.email,
+          password: dto.password,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
+          description: dto.description,
+        },
+      });
+      // Remove the password field from the student record
+      delete student.password;
+      return student;
+    } catch (error) {
+      throw new ForbiddenException('Student not found');
+    }
+  }
 }

@@ -25,4 +25,9 @@ export class StudentController {
   findAll() {
     return this.studentService.findAll();
   }
+
+  @Post('update')
+  update(@Body() dto: any) {
+    return this.studentService.update(dto);
+  }
 }
