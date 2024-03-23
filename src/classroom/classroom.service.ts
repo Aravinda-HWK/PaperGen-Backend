@@ -25,9 +25,7 @@ export class ClassroomService {
           where: { id: dto.teacherID },
         });
       } catch {
-        throw new ForbiddenException(
-          'You are not allowed to create a classroom',
-        );
+        throw new ForbiddenException('Teacher does not exist');
       }
       return await this.prisma.classroom.create({
         data: {
@@ -39,9 +37,11 @@ export class ClassroomService {
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        throw new ForbiddenException(
-          'You are not allowed to create a classroom',
-        );
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('Classroom name is already taken');
+        } else {
+          throw new ForbiddenException('An error occurred');
+        }
       }
       throw error;
     }
