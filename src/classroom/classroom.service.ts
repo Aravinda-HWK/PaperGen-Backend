@@ -53,4 +53,9 @@ export class ClassroomService {
       where: { teacherId: teacherID },
     });
   }
+
+  // Get all classrooms
+  async getClassrooms() {
+    return await this.prisma.classroom.findMany();
+  }
 }

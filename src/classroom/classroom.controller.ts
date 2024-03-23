@@ -14,4 +14,9 @@ export class ClassroomController {
   async getTeacherClassrooms(@Body() data: { teacherID: any }) {
     return this.classroomService.getTeacherClassrooms(data.teacherID);
   }
+
+  @Get('all-classrooms')
+  async getClassrooms() {
+    return this.classroomService.getClassrooms();
+  }
 }
