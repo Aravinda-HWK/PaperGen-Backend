@@ -58,4 +58,59 @@ export class ClassroomService {
   async getClassrooms() {
     return await this.prisma.classroom.findMany();
   }
+
+  // Add a student to a classroom
+  async addStudent(dto: { classroomID: any; studentID: any }) {
+    try {
+      let classroom: {
+        id: any;
+        createdAt?: Date;
+        updatedAt?: Date;
+        name?: string;
+        teacherId?: any;
+      };
+      try {
+        classroom = await this.prisma.classroom.findUnique({
+          where: { id: dto.classroomID },
+        });
+      } catch {
+        throw new ForbiddenException('Classroom does not exist');
+      }
+      let student: {
+        id: any;
+        createdAt?: Date;
+        updatedAt?: Date;
+        email?: string;
+        password?: string;
+        firstName?: string;
+        lastName?: string;
+        photo?: Buffer;
+        description?: string;
+      };
+      try {
+        student = await this.prisma.student.findUnique({
+          where: { id: dto.studentID },
+        });
+      } catch {
+        throw new ForbiddenException('Student does not exist');
+      }
+      return await this.prisma.classroom.update({
+        where: { id: dto.classroomID },
+        data: {
+          students: {
+            connect: { id: student.id },
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new ForbiddenException('Student is already in the classroom');
+        } else {
+          throw new ForbiddenException('An error occurred');
+        }
+      }
+      throw error;
+    }
+  }
 }

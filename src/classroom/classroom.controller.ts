@@ -19,4 +19,9 @@ export class ClassroomController {
   async getClassrooms() {
     return this.classroomService.getClassrooms();
   }
+
+  @Put('add-student')
+  async addStudent(@Body() data: { classroomID: any; studentID: any }) {
+    return this.classroomService.addStudent(data);
+  }
 }
