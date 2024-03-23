@@ -6,6 +6,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 export class ClassroomService {
   constructor(private prisma: PrismaService) {}
 
+  // Create a classroom
   async createClassroom(dto: { teacherID: any; name: string }) {
     try {
       let teacher: {
@@ -44,5 +45,12 @@ export class ClassroomService {
       }
       throw error;
     }
+  }
+
+  // Get all classrooms for a teacher
+  async getTeacherClassrooms(teacherID: any) {
+    return await this.prisma.classroom.findMany({
+      where: { teacherId: teacherID },
+    });
   }
 }
