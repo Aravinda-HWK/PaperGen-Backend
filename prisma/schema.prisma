@@ -38,7 +38,7 @@ model classroom {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  name        String
+  name        String  @unique
   description String?
   teacherId   Int
   teacher     teacher  @relation(fields: [teacherId], references: [id])
