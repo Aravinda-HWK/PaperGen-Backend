@@ -113,4 +113,21 @@ export class ClassroomService {
       throw error;
     }
   }
+
+  // Get all students in a classroom
+  async getStudents(classroomID: any) {
+    const classroom = await this.prisma.classroom.findUnique({
+      where: { id: classroomID },
+    });
+
+    if (!classroom) {
+      throw new ForbiddenException('Classroom does not exist');
+    } else {
+      return await this.prisma.classroom
+        .findUnique({
+          where: { id: classroomID },
+        })
+        .students();
+    }
+  }
 }

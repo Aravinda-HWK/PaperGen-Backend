@@ -24,4 +24,9 @@ export class ClassroomController {
   async addStudent(@Body() data: { classroomID: any; studentID: any }) {
     return this.classroomService.addStudent(data);
   }
+
+  @Get('students')
+  async getStudents(@Body() data: { classroomID: any }) {
+    return this.classroomService.getStudents(data.classroomID);
+  }
 }
