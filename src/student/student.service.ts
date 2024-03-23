@@ -1,18 +1,19 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto/auth.dto';
+import { StudentDto } from './dto/student.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as fs from 'fs';
 
 @Injectable()
-export class AuthService {
+export class StudentService {
   constructor(private prisma: PrismaService) {}
-  async signup(dto: AuthDto) {
+  async signup(dto: StudentDto) {
     // Generate the password hash (salt + hash)
     const hash = await argon.hash(dto.password);
     // Create the user record in the database
     try {
-      const teacher = await this.prisma.teacher.create({
+      const student = await this.prisma.student.create({
         data: {
           email: dto.email,
           password: hash,
@@ -20,8 +21,8 @@ export class AuthService {
       });
 
       // Return the user record
-      delete teacher.password;
-      return teacher;
+      delete student.password;
+      return student;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -33,89 +34,89 @@ export class AuthService {
     }
   }
 
-  async signin(dto: AuthDto) {
+  async signin(dto: StudentDto) {
     // find the user by email
-    const teacher = await this.prisma.teacher.findUnique({
+    const student = await this.prisma.student.findUnique({
       where: {
         email: dto.email,
       },
     });
 
     // if the user is not found, throw an error
-    if (!teacher) {
+    if (!student) {
       throw new ForbiddenException('Invalid credentials');
     }
     // if the user is found, compare the password hashes
-    const match = await argon.verify(teacher.password, dto.password);
+    const match = await argon.verify(student.password, dto.password);
     // if the password hashes match, return the user record
     if (match) {
-      delete teacher.password;
-      return teacher;
+      delete student.password;
+      return student;
     }
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');
   }
 
-  // Find a teacher by id
-  async findTeacherById(id: number) {
-    const teacherId = parseInt(id.toString());
-    console.log(teacherId);
+  // Find a student by id
+  async findOne(id: number) {
+    const studentId = parseInt(id.toString());
     try {
-      const teacher = await this.prisma.teacher.findUnique({
+      const student = await this.prisma.student.findUnique({
         where: {
-          id: teacherId,
+          id: studentId,
         },
       });
-      delete teacher.password;
-      return teacher;
+      // Remove the password field from the student record
+      delete student.password;
+      return student;
     } catch (error) {
-      throw new ForbiddenException('Teacher not found');
+      throw new ForbiddenException('Student not found');
     }
   }
 
-  //Get all the teachers
-  async findAllTeachers() {
+  // Get the list of all students
+  async findAll() {
     try {
-      // Get all the teachers
-      const teachers = await this.prisma.teacher.findMany();
-      return teachers.map((teacher) => {
-        // Remove the password field from the teacher record
-        delete teacher.password;
-        return teacher;
+      // Find all students
+
+      const students = await this.prisma.student.findMany();
+      // Remove the password field from each student record
+      return students.map((student) => {
+        delete student.password;
+        return student;
       });
     } catch (error) {
-      throw new ForbiddenException('Teachers not found');
+      throw new ForbiddenException('Students not found');
     }
   }
 
-  // Update the teacher record
-  async updateTeacher(dto: any) {
-    console.log(dto);
-    const teacherId = parseInt(dto.id.toString());
+  // Update a student by id
+  async update(dto: any) {
+    const studentId = parseInt(dto.id.toString());
     // Generate the password hash (salt + hash)
     if (dto.password) {
       dto.password = await argon.hash(dto.password);
     }
     try {
-      // Update the teacher record
-      const teacher = await this.prisma.teacher.update({
+      // Update the student record
+      const student = await this.prisma.student.update({
         where: {
-          id: teacherId,
+          id: studentId,
         },
         data: {
           email: dto.email,
           password: dto.password,
-          firstName: dto.firstname,
-          lastName: dto.lastname,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
           description: dto.description,
           photo: dto.photo.buffer,
         },
       });
-      // Remove the password field from the teacher record
-      delete teacher.password;
-      return teacher;
+      // Remove the password field from the student record
+      delete student.password;
+      return student;
     } catch (error) {
-      throw new ForbiddenException('Teacher not found');
+      throw new ForbiddenException('Student not found');
     }
   }
 }
