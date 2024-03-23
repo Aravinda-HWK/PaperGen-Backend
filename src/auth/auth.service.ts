@@ -55,4 +55,67 @@ export class AuthService {
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');
   }
+
+  // Find a teacher by id
+  async findTeacherById(id: number) {
+    const teacherId = parseInt(id.toString());
+    console.log(teacherId);
+    try {
+      const teacher = await this.prisma.teacher.findUnique({
+        where: {
+          id: teacherId,
+        },
+      });
+      delete teacher.password;
+      return teacher;
+    } catch (error) {
+      throw new ForbiddenException('Teacher not found');
+    }
+  }
+
+  //Get all the teachers
+  async findAllTeachers() {
+    try {
+      // Get all the teachers
+      const teachers = await this.prisma.teacher.findMany();
+      return teachers.map((teacher) => {
+        // Remove the password field from the teacher record
+        delete teacher.password;
+        return teacher;
+      });
+    } catch (error) {
+      throw new ForbiddenException('Teachers not found');
+    }
+  }
+
+  // Update the teacher record
+  async updateTeacher(dto: any) {
+    console.log(dto);
+    const teacherId = parseInt(dto.id.toString());
+    // Generate the password hash (salt + hash)
+    if (dto.password) {
+      dto.password = await argon.hash(dto.password);
+    }
+    try {
+      // Update the teacher record
+      const teacher = await this.prisma.teacher.update({
+        where: {
+          id: teacherId,
+        },
+        data: {
+          email: dto.email,
+          password: dto.password,
+          firstName: dto.firstname,
+          lastName: dto.lastname,
+          description: dto.description,
+          photo: dto.photo.buffer,
+        },
+      });
+      // Remove the password field from the teacher record
+      delete teacher.password;
+      return teacher;
+    } catch (error) {
+      throw new ForbiddenException('Teacher not found');
+    }
+  }
 }

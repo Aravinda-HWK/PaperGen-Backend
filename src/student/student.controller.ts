@@ -31,7 +31,7 @@ export class StudentController {
     return this.studentService.findOne(id);
   }
 
-  @Get()
+  @Get('findAll')
   findAll() {
     return this.studentService.findAll();
   }
@@ -39,7 +39,9 @@ export class StudentController {
   @Post('update')
   @UseInterceptors(FileInterceptor('photo'))
   update(@Headers() dto: any, @UploadedFile() photo: Express.Multer.File) {
-    dto.photo = photo;
+    if (photo) {
+      dto.photo = photo;
+    }
     return this.studentService.update(dto);
   }
 }
