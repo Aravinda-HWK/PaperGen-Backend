@@ -44,4 +44,26 @@ export class PaperService {
   async findAll() {
     return await this.prisma.paper.findMany();
   }
+
+  // Add a new method to the PaperService class that retrieves a paper by ID.
+  async findOne(id: number) {
+    try {
+      const result = await this.prisma.paper.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ForbiddenException('Paper not found');
+      } else {
+        return result;
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }

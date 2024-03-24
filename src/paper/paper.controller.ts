@@ -15,4 +15,9 @@ export class PaperController {
   async findAll() {
     return await this.paperService.findAll();
   }
+
+  @Get('paper-by-id')
+  async findOne(@Body() data: { id: number }) {
+    return await this.paperService.findOne(data.id);
+  }
 }
