@@ -41,4 +41,9 @@ export class ClassroomController {
   async deleteClassroom(@Body() data: { classroomID: any }) {
     return this.classroomService.deleteClassroom(data.classroomID);
   }
+
+  @Delete('delete-student')
+  async deleteStudent(@Body() data: { classroomID: any; studentID: any }) {
+    return this.classroomService.deleteStudent(data);
+  }
 }

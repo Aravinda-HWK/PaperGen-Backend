@@ -164,4 +164,20 @@ export class ClassroomService {
       throw new ForbiddenException('Classroom does not exist');
     }
   }
+
+  // Delete a student from a classroom
+  async deleteStudent(dto: { classroomID: any; studentID: any }) {
+    try {
+      return await this.prisma.classroom.update({
+        where: { id: dto.classroomID },
+        data: {
+          students: {
+            disconnect: { id: dto.studentID },
+          },
+        },
+      });
+    } catch {
+      throw new ForbiddenException('Student is not in the classroom');
+    }
+  }
 }
