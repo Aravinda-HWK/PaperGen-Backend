@@ -130,4 +130,27 @@ export class ClassroomService {
         .students();
     }
   }
+
+  // Update the classroom details
+  async updateClassroom(dto: {
+    classroomID: any;
+    name: string;
+    description: string;
+  }) {
+    try {
+      return await this.prisma.classroom.update({
+        where: { id: dto.classroomID },
+        data: { name: dto.name, description: dto.description },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('Classroom name is already taken');
+        } else {
+          throw new ForbiddenException('An error occurred');
+        }
+      }
+      throw error;
+    }
+  }
 }

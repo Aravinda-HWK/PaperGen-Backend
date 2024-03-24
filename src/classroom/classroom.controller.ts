@@ -29,4 +29,11 @@ export class ClassroomController {
   async getStudents(@Body() data: { classroomID: any }) {
     return this.classroomService.getStudents(data.classroomID);
   }
+
+  @Put('update-details')
+  async updateClassroomDetails(
+    @Body() data: { classroomID: any; name: string; description: string },
+  ) {
+    return this.classroomService.updateClassroom(data);
+  }
 }
