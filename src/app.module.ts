@@ -4,6 +4,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { StudentModule } from './student/student.module';
 import { PassportModule } from '@nestjs/passport';
 import { ClassroomModule } from './classroom/classroom.module';
+import { PaperModule } from './paper/paper.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { ClassroomModule } from './classroom/classroom.module';
     PrismaModule,
     StudentModule,
     ClassroomModule,
+    PaperModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
 })
