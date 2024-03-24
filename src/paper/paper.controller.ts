@@ -20,4 +20,9 @@ export class PaperController {
   async findOne(@Body() data: { id: number }) {
     return await this.paperService.findOne(data.id);
   }
+
+  @Get('paper-by-classroom')
+  async findByClassroom(@Body() data: { classroomId: number }) {
+    return await this.paperService.findByClassroom(data.classroomId);
+  }
 }

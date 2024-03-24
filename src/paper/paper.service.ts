@@ -66,4 +66,20 @@ export class PaperService {
       throw error;
     }
   }
+
+  // Add a new method to the PaperService class that retrieves a paper by classroom ID.
+  async findByClassroom(id: number) {
+    try {
+      return await this.prisma.paper.findMany({
+        where: {
+          classroomId: id,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }
