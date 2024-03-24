@@ -104,4 +104,41 @@ export class PaperService {
       throw error;
     }
   }
+
+  // Add a new method to the PaperService class that updates a paper by ID.
+  async update(id: number, data: CreatePaperDto) {
+    try {
+      if (
+        typeof data.startTime === 'object' &&
+        data.startTime instanceof Date &&
+        typeof data.endTime === 'object' &&
+        data.endTime instanceof Date
+      ) {
+        data.startTime = new Date(data.startTime);
+        data.endTime = new Date(data.endTime);
+      } else {
+        data.startTime = new Date(data.startTime);
+        data.endTime = new Date(data.endTime);
+      }
+      id = Number(id);
+      return await this.prisma.paper.update({
+        where: {
+          id,
+        },
+        data: {
+          name: data.name,
+          description: data.description,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          numberOfQuestions: data.numberOfQuestions,
+          classroom: { connect: { id: data.classroomId } },
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }
