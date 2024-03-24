@@ -82,4 +82,26 @@ export class PaperService {
       throw error;
     }
   }
+
+  // Add a new method to the PaperService class that deletes a paper by ID.
+  async delete(id: number) {
+    try {
+      const result = await this.prisma.paper.delete({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ForbiddenException('Paper not found');
+      } else {
+        return { message: 'Paper deleted successfully', result };
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }
