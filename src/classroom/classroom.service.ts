@@ -153,4 +153,15 @@ export class ClassroomService {
       throw error;
     }
   }
+
+  // Delete a classroom
+  async deleteClassroom(classroomID: any) {
+    try {
+      return await this.prisma.classroom.delete({
+        where: { id: classroomID },
+      });
+    } catch {
+      throw new ForbiddenException('Classroom does not exist');
+    }
+  }
 }
