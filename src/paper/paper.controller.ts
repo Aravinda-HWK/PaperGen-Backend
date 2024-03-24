@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { PaperService } from './paper.service';
 import { CreatePaperDto } from './dto/create-paper.dto'; // Import the missing CreatePaperDto class
 
@@ -9,5 +9,10 @@ export class PaperController {
   @Post('create')
   async create(@Body() data: CreatePaperDto) {
     return await this.paperService.create(data);
+  }
+
+  @Get('all')
+  async findAll() {
+    return await this.paperService.findAll();
   }
 }

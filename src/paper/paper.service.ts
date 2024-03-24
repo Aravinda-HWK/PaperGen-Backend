@@ -39,4 +39,9 @@ export class PaperService {
       throw error;
     }
   }
+
+  // Add a new method to the PaperService class that retrieves all papers.
+  async findAll() {
+    return await this.prisma.paper.findMany();
+  }
 }
