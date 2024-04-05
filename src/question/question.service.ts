@@ -120,4 +120,19 @@ export class QuestionService {
       throw error;
     }
   }
+
+  // Add a new method to the QuestionService class that retrieves a question by classroom ID.
+  async findByClassroom(id: number) {
+    try {
+      return await this.prisma.question.findMany({
+        where: {
+          paper: {
+            classroomId: id,
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

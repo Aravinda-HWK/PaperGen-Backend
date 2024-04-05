@@ -34,4 +34,9 @@ export class QuestionController {
   async update(@Body() data: any) {
     return await this.questionService.update(data);
   }
+
+  @Get('question-by-clssroomId')
+  async findByClassroom(@Body() data: { classroomId: number }) {
+    return await this.questionService.findByClassroom(data.classroomId);
+  }
 }
