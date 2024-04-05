@@ -71,4 +71,26 @@ export class QuestionService {
       throw error;
     }
   }
+
+  // Add a new method to the QuestionService class that deletes a question by ID.
+  async delete(id: number) {
+    try {
+      const result = await this.prisma.question.delete({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ForbiddenException('Question not found');
+      } else {
+        return result;
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }

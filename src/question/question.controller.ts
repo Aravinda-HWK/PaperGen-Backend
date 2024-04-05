@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { QuestionService } from './question.service';
 
 @Controller('question')
@@ -23,5 +23,10 @@ export class QuestionController {
   @Post('check-answer')
   async checkAnswer(@Body() data: { id: number; answer: string }) {
     return await this.questionService.checkAnswer(data.id, data.answer);
+  }
+
+  @Delete('delete')
+  async delete(@Body() data: { id: number }) {
+    return await this.questionService.delete(data.id);
   }
 }
