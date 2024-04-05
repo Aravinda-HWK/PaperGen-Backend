@@ -24,4 +24,13 @@ export class QuestionService {
       throw error;
     }
   }
+
+  // Add a new method to the QuestionService class that retrieves all questions for a paper.
+  async findByPaperId(paperId: number) {
+    return await this.prisma.question.findMany({
+      where: {
+        paperId,
+      },
+    });
+  }
 }
