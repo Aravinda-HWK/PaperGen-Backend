@@ -33,4 +33,23 @@ export class QuestionService {
       },
     });
   }
+
+  // Add a new method to the QuestionService class that retrieves a question by ID.
+  async findOne(id: number) {
+    try {
+      const result = await this.prisma.question.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ForbiddenException('Question not found');
+      } else {
+        return result;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }

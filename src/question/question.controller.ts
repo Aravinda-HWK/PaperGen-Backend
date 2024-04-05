@@ -14,4 +14,9 @@ export class QuestionController {
   async findByPaperId(@Body() data: { paperId: number }) {
     return await this.questionService.findByPaperId(data.paperId);
   }
+
+  @Get('by-id')
+  async findOne(@Body() data: { id: number }) {
+    return await this.questionService.findOne(data.id);
+  }
 }
