@@ -19,4 +19,9 @@ export class QuestionController {
   async findOne(@Body() data: { id: number }) {
     return await this.questionService.findOne(data.id);
   }
+
+  @Post('check-answer')
+  async checkAnswer(@Body() data: { id: number; answer: string }) {
+    return await this.questionService.checkAnswer(data.id, data.answer);
+  }
 }

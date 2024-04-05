@@ -52,4 +52,23 @@ export class QuestionService {
       throw error;
     }
   }
+
+  // Check the answer is correct or not
+  async checkAnswer(id: number, answer: string) {
+    try {
+      const question = await this.prisma.question.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!question) {
+        throw new ForbiddenException('Question not found');
+      }
+
+      return question.correctAnswer === answer;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
