@@ -93,4 +93,31 @@ export class QuestionService {
       throw error;
     }
   }
+
+  // Add a new method to the QuestionService class that updates a question by ID.
+  async update(data: any) {
+    try {
+      const result = await this.prisma.question.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          content: data.content,
+          sampleAnswer: data.sampleAnswer,
+          correctAnswer: data.correctAnswer,
+        },
+      });
+
+      if (!result) {
+        throw new ForbiddenException('Question not found');
+      } else {
+        return result;
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }

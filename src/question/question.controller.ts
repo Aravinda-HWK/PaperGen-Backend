@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { QuestionService } from './question.service';
 
 @Controller('question')
@@ -28,5 +28,10 @@ export class QuestionController {
   @Delete('delete')
   async delete(@Body() data: { id: number }) {
     return await this.questionService.delete(data.id);
+  }
+
+  @Put('update')
+  async update(@Body() data: any) {
+    return await this.questionService.update(data);
   }
 }
