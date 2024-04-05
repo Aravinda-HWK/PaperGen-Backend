@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { PaperService } from './paper.service';
 import { CreatePaperDto } from './dto/create-paper.dto'; // Import the missing CreatePaperDto class
-import { query } from 'express';
 
 @Controller('paper')
 export class PaperController {
