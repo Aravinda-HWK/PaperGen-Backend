@@ -53,4 +53,16 @@ export class ResultService {
       },
     });
   }
+
+  // Update a result
+  async update(data: { resultID: any; score: number }) {
+    return this.prisma.result.update({
+      where: {
+        id: data.resultID,
+      },
+      data: {
+        score: data.score,
+      },
+    });
+  }
 }
