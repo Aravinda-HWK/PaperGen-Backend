@@ -32,6 +32,7 @@ export class ResultService {
           studentId: data.studentID,
           paperId: data.paperID,
           score,
+          answers: data.answer,
         },
       });
       return result;
@@ -41,5 +42,15 @@ export class ResultService {
       }
       throw error;
     }
+  }
+
+  // Get all results for a student for a paper
+  async getStudentResults(studentID: any, paperID: any) {
+    return this.prisma.result.findMany({
+      where: {
+        studentId: studentID,
+        paperId: paperID,
+      },
+    });
   }
 }

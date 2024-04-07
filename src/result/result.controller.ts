@@ -11,4 +11,9 @@ export class ResultController {
   ) {
     return this.resultService.create(data);
   }
+
+  @Get('student-paper-results')
+  async getStudentResults(@Body() data: { studentID: any; paperID: any }) {
+    return this.resultService.getStudentResults(data.studentID, data.paperID);
+  }
 }
