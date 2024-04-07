@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { ResultService } from './result.service';
 
 @Controller('result')
@@ -20,5 +20,25 @@ export class ResultController {
   @Put('update')
   async updateResult(@Body() data: { resultID: any; score: number }) {
     return this.resultService.update(data);
+  }
+
+  @Delete('delete')
+  async deleteResult(@Body() data: { resultID: any }) {
+    return this.resultService.delete(data.resultID);
+  }
+
+  @Get('paper-results')
+  async getPaperResults(@Body() data: { paperID: any }) {
+    return this.resultService.getPaperResults(data.paperID);
+  }
+
+  @Get('student-results')
+  async getStudentAllResults(@Body() data: { studentID: any }) {
+    return this.resultService.getStudentAllResults(data.studentID);
+  }
+
+  @Get('highest-score')
+  async getHighestScore(@Body() data: { paperID: any }) {
+    return this.resultService.getHighestScore(data.paperID);
   }
 }

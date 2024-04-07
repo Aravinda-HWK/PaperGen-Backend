@@ -65,4 +65,43 @@ export class ResultService {
       },
     });
   }
+
+  // Delete a result
+  async delete(resultID: any) {
+    return this.prisma.result.delete({
+      where: {
+        id: resultID,
+      },
+    });
+  }
+
+  // Get all results for a paper
+  async getPaperResults(paperID: any) {
+    return this.prisma.result.findMany({
+      where: {
+        paperId: paperID,
+      },
+    });
+  }
+
+  // Get all results for a student
+  async getStudentAllResults(studentID: any) {
+    return this.prisma.result.findMany({
+      where: {
+        studentId: studentID,
+      },
+    });
+  }
+
+  // Get the highest score for a paper
+  async getHighestScore(paperID: any) {
+    return this.prisma.result.findFirst({
+      where: {
+        paperId: paperID,
+      },
+      orderBy: {
+        score: 'desc',
+      },
+    });
+  }
 }
