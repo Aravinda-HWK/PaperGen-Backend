@@ -93,7 +93,7 @@ export class ResultService {
     });
   }
 
-  // Get the highest score for a paper
+  // Get the highest score for a paper given the paper ID
   async getHighestScore(paperID: any) {
     return this.prisma.result.findFirst({
       where: {
