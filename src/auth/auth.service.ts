@@ -8,8 +8,12 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
   async signup(dto: AuthDto) {
-    // Generate the password hash (salt + hash)
-    const hash = await argon.hash(dto.password);
+    const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
+
+    // Hash the password with the salt
+    const hash = await argon.hash(dto.password, {
+      salt: Buffer.from(salt),
+    });
     // Create the user record in the database
     try {
       const teacher = await this.prisma.teacher.create({
@@ -45,8 +49,13 @@ export class AuthService {
     if (!teacher) {
       throw new ForbiddenException('Invalid credentials');
     }
+
+    const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
+
     // if the user is found, compare the password hashes
-    const match = await argon.verify(teacher.password, dto.password);
+    const match = await argon.verify(teacher.password, dto.password, {
+      salt: Buffer.from(salt),
+    });
     // if the password hashes match, return the user record
     if (match) {
       delete teacher.password;
@@ -90,7 +99,6 @@ export class AuthService {
 
   // Update the teacher record
   async updateTeacher(dto: any) {
-    console.log(dto);
     const teacherId = parseInt(dto.id.toString());
     // Generate the password hash (salt + hash)
     if (dto.password) {
