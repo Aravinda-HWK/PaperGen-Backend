@@ -1,13 +1,18 @@
 import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { ResultService } from './result.service';
 
+interface Answer {
+  questionId: number;
+  answer: string;
+}
+
 @Controller('result')
 export class ResultController {
   constructor(private resultService: ResultService) {}
 
   @Post('create')
   async createResult(
-    @Body() data: { studentID: any; paperID: any; answer: string[] },
+    @Body() data: { studentID: any; paperID: any; answer: Answer[] },
   ) {
     return this.resultService.create(data);
   }
