@@ -4,10 +4,14 @@ import { StudentDto } from './dto/student.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as fs from 'fs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class StudentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
   async signup(dto: StudentDto) {
     // Generate the password hash (salt + hash)
     const hash = await argon.hash(dto.password);
@@ -50,8 +54,13 @@ export class StudentService {
     const match = await argon.verify(student.password, dto.password);
     // if the password hashes match, return the user record
     if (match) {
-      delete student.password;
-      return student;
+      const payload = {
+        id: student.id,
+        email: student.email,
+      };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
     }
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');

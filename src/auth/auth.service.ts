@@ -3,10 +3,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
   async signup(dto: AuthDto) {
     const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
 
@@ -58,8 +62,13 @@ export class AuthService {
     });
     // if the password hashes match, return the user record
     if (match) {
-      delete teacher.password;
-      return teacher;
+      const payload = {
+        id: teacher.id,
+        email: teacher.email,
+      };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
     }
     // if the password hashes do not match, throw an error
     throw new ForbiddenException('Invalid credentials');
