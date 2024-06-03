@@ -77,7 +77,6 @@ export class AuthService {
   // Find a teacher by id
   async findTeacherById(id: number) {
     const teacherId = parseInt(id.toString());
-    console.log(teacherId);
     try {
       const teacher = await this.prisma.teacher.findUnique({
         where: {
