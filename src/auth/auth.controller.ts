@@ -41,11 +41,7 @@ export class AuthController {
   }
 
   @Post('update')
-  @UseInterceptors(FileInterceptor('photo'))
-  update(@Headers() dto: any, @UploadedFile() photo: Express.Multer.File) {
-    if (photo) {
-      dto.photo = photo;
-    }
+  update(@Body() dto: any) {
     return this.authService.updateTeacher(dto);
   }
 }

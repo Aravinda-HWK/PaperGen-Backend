@@ -107,10 +107,14 @@ export class AuthService {
 
   // Update the teacher record
   async updateTeacher(dto: any) {
+    console.log(dto);
     const teacherId = parseInt(dto.id.toString());
     // Generate the password hash (salt + hash)
     if (dto.password) {
-      dto.password = await argon.hash(dto.password);
+      const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
+      dto.password = await argon.hash(dto.password, {
+        salt: Buffer.from(salt),
+      });
     }
     try {
       // Update the teacher record
@@ -121,10 +125,10 @@ export class AuthService {
         data: {
           email: dto.email,
           password: dto.password,
-          firstName: dto.firstname,
-          lastName: dto.lastname,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
           description: dto.description,
-          photo: dto.photo.buffer,
+          photo: dto.photo,
         },
       });
       // Remove the password field from the teacher record

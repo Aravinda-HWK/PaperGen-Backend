@@ -15,7 +15,7 @@ model teacher {
   password    String
   firstName   String?
   lastName    String?
-  photo       Bytes?
+  photo       String?
   description String?
   classrooms  classroom[]
 }

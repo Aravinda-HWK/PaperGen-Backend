@@ -58,6 +58,16 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Run the prisma
+
+```bash
+# Run the migration script
+$ npx prisma migrate dev
+
+# Run the prisma client
+$ npm run prisma
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
