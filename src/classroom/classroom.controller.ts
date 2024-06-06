@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ClassroomService } from './classroom.service';
 
 @Controller('classroom')
@@ -11,7 +19,7 @@ export class ClassroomController {
   }
 
   @Get('teacher-classrooms')
-  async getTeacherClassrooms(@Body() data: { teacherID: any }) {
+  async getTeacherClassrooms(@Query() data: { teacherID: any }) {
     return this.classroomService.getTeacherClassrooms(data.teacherID);
   }
 

@@ -49,9 +49,18 @@ export class ClassroomService {
 
   // Get all classrooms for a teacher
   async getTeacherClassrooms(teacherID: any) {
-    return await this.prisma.classroom.findMany({
+    // Change the teacher Id to number
+    teacherID = parseInt(teacherID);
+    const classrooms = await this.prisma.classroom.findMany({
       where: { teacherId: teacherID },
     });
+    for (let i = 0; i < classrooms.length; i++) {
+      const students = await this.prisma.student.findMany({
+        where: { classrooms: { some: { id: classrooms[i].id } } },
+      });
+      classrooms[i]['numberOfStudents'] = students.length;
+    }
+    return classrooms;
   }
 
   // Get all classrooms
