@@ -44,4 +44,9 @@ export class StudentController {
     }
     return this.studentService.update(dto);
   }
+
+  @Get('allStudentsForTeacher')
+  allStudentsForTeacher(@Query('teacherID') teacherID: number) {
+    return this.studentService.getTeacherStudents(teacherID);
+  }
 }

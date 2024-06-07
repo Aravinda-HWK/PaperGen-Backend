@@ -128,4 +128,32 @@ export class StudentService {
       throw new ForbiddenException('Student not found');
     }
   }
+
+  // Get all the students for a teacher
+  async getTeacherStudents(teacherID: any) {
+    const teacherId = parseInt(teacherID.toString());
+    const teacher = await this.prisma.teacher.findUnique({
+      where: { id: teacherId },
+    });
+
+    if (!teacher) {
+      throw new ForbiddenException('Teacher does not exist');
+    } else {
+      const classrooms = await this.prisma.teacher
+        .findUnique({
+          where: { id: teacherId },
+        })
+        .classrooms();
+
+      let students: any[] = [];
+      for (let i = 0; i < classrooms.length; i++) {
+        const studentsInClassroom = await this.prisma.student.findMany({
+          where: { classrooms: { some: { id: classrooms[i].id } } },
+        });
+        studentsInClassroom.forEach((student) => delete student.password);
+        students = students.concat(studentsInClassroom);
+      }
+      return students;
+    }
+  }
 }
