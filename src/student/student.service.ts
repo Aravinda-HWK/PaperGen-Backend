@@ -14,7 +14,10 @@ export class StudentService {
   ) {}
   async signup(dto: StudentDto) {
     // Generate the password hash (salt + hash)
-    const hash = await argon.hash(dto.password);
+    const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
+    const hash = await argon.hash(dto.password, {
+      salt: Buffer.from(salt),
+    });
     // Create the user record in the database
     try {
       const student = await this.prisma.student.create({
@@ -50,8 +53,11 @@ export class StudentService {
     if (!student) {
       throw new ForbiddenException('Invalid credentials');
     }
+    const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
     // if the user is found, compare the password hashes
-    const match = await argon.verify(student.password, dto.password);
+    const match = await argon.verify(student.password, dto.password, {
+      salt: Buffer.from(salt),
+    });
     // if the password hashes match, return the user record
     if (match) {
       const payload = {
@@ -104,7 +110,10 @@ export class StudentService {
     const studentId = parseInt(dto.id.toString());
     // Generate the password hash (salt + hash)
     if (dto.password) {
-      dto.password = await argon.hash(dto.password);
+      const salt = 'a1b2c3d4e5f607081920abcdefabcdef';
+      dto.password = await argon.hash(dto.password, {
+        salt: Buffer.from(salt),
+      });
     }
     try {
       // Update the student record
@@ -118,7 +127,7 @@ export class StudentService {
           firstName: dto.firstName,
           lastName: dto.lastName,
           description: dto.description,
-          photo: dto.photo.buffer,
+          photo: dto.photo,
         },
       });
       // Remove the password field from the student record

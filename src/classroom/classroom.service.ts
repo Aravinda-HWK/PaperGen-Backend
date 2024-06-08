@@ -93,7 +93,7 @@ export class ClassroomService {
         password?: string;
         firstName?: string;
         lastName?: string;
-        photo?: Buffer;
+        photo?: string;
         description?: string;
       };
       try {
