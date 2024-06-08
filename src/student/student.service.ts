@@ -159,7 +159,14 @@ export class StudentService {
         const studentsInClassroom = await this.prisma.student.findMany({
           where: { classrooms: { some: { id: classrooms[i].id } } },
         });
-        studentsInClassroom.forEach((student) => delete student.password);
+        studentsInClassroom.forEach((student) => {
+          delete student.password;
+          // Add the classroom name and id to the student record
+          student['classroom'] = {
+            id: classrooms[i].id,
+            name: classrooms[i].name,
+          };
+        });
         students = students.concat(studentsInClassroom);
       }
       return students;
