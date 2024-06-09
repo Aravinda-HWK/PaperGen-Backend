@@ -7,7 +7,11 @@ export class ClassroomService {
   constructor(private prisma: PrismaService) {}
 
   // Create a classroom
-  async createClassroom(dto: { teacherID: any; name: string }) {
+  async createClassroom(dto: {
+    teacherID: any;
+    name: string;
+    description?: string;
+  }) {
     try {
       let teacher: {
         id: any;
@@ -30,6 +34,7 @@ export class ClassroomService {
       return await this.prisma.classroom.create({
         data: {
           name: dto.name,
+          description: dto.description,
           teacher: {
             connect: { id: teacher.id },
           },

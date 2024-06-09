@@ -14,7 +14,9 @@ export class ClassroomController {
   constructor(private classroomService: ClassroomService) {}
 
   @Post()
-  async createClassroom(@Body() data: { name: string; teacherID: any }) {
+  async createClassroom(
+    @Body() data: { name: string; teacherID: any; description?: string },
+  ) {
     return this.classroomService.createClassroom(data);
   }
 
