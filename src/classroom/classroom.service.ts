@@ -74,7 +74,7 @@ export class ClassroomService {
   }
 
   // Add a student to a classroom
-  async addStudent(dto: { classroomID: any; studentID: any }) {
+  async addStudent(dto: { classroomID: any; email: string }) {
     try {
       let classroom: {
         id: any;
@@ -103,19 +103,19 @@ export class ClassroomService {
       };
       try {
         student = await this.prisma.student.findUnique({
-          where: { id: dto.studentID },
+          where: { email: dto.email },
+        });
+        return await this.prisma.classroom.update({
+          where: { id: dto.classroomID },
+          data: {
+            students: {
+              connect: { id: student.id },
+            },
+          },
         });
       } catch {
         throw new ForbiddenException('Student does not exist');
       }
-      return await this.prisma.classroom.update({
-        where: { id: dto.classroomID },
-        data: {
-          students: {
-            connect: { id: student.id },
-          },
-        },
-      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

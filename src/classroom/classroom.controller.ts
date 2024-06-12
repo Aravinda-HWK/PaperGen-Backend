@@ -31,7 +31,7 @@ export class ClassroomController {
   }
 
   @Put('add-student')
-  async addStudent(@Body() data: { classroomID: any; studentID: any }) {
+  async addStudent(@Body() data: { classroomID: any; email: any }) {
     return this.classroomService.addStudent(data);
   }
 
