@@ -20,6 +20,14 @@ export class StudentService {
     });
     // Create the user record in the database
     try {
+      const student1 = await this.prisma.student.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+      if (student1) {
+        throw new ForbiddenException('Email already exists');
+      }
       const student = await this.prisma.student.create({
         data: {
           email: dto.email,
@@ -116,6 +124,16 @@ export class StudentService {
       });
     }
     try {
+      if (dto.email) {
+        const student1 = await this.prisma.student.findUnique({
+          where: {
+            email: dto.email,
+          },
+        });
+        if (student1) {
+          throw new ForbiddenException('Email already exists');
+        }
+      }
       // Update the student record
       const student = await this.prisma.student.update({
         where: {

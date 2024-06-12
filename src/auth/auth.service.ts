@@ -18,6 +18,14 @@ export class AuthService {
     const hash = await argon.hash(dto.password, {
       salt: Buffer.from(salt),
     });
+    const teacher1 = await this.prisma.teacher.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (teacher1) {
+      throw new ForbiddenException('Email already exists');
+    }
     // Create the user record in the database
     try {
       const teacher = await this.prisma.teacher.create({
@@ -117,6 +125,16 @@ export class AuthService {
       });
     }
     try {
+      if (dto.email) {
+        const teacher1 = await this.prisma.teacher.findUnique({
+          where: {
+            email: dto.email,
+          },
+        });
+        if (teacher1) {
+          throw new ForbiddenException('Email already exists');
+        }
+      }
       // Update the teacher record
       const teacher = await this.prisma.teacher.update({
         where: {
