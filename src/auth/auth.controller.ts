@@ -1,18 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  UploadedFile,
-  UseInterceptors,
-  Headers,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtGuard } from './guard';
 
 @Controller('auth')

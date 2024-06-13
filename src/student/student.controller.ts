@@ -1,16 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Headers,
-  Post,
-  Query,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentDto } from './dto/student.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('student')
 export class StudentController {
