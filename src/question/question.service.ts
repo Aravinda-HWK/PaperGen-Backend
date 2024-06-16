@@ -9,13 +9,26 @@ export class QuestionService {
   // Add a new method to the QuestionService class that creates a new question.
   async create(data: any) {
     try {
-      return await this.prisma.question.create({
-        data: {
-          content: data.content,
-          sampleAnswer: data.sampleAnswer,
-          correctAnswer: data.correctAnswer,
-          paper: { connect: { id: data.paperId } },
-        },
+      return await this.prisma.$transaction(async (prisma) => {
+        const newQuestion = await prisma.question.create({
+          data: {
+            content: data.content,
+            sampleAnswer: data.sampleAnswer,
+            correctAnswer: data.correctAnswer,
+            paper: { connect: { id: data.paperId } },
+          },
+        });
+
+        await prisma.paper.update({
+          where: { id: data.paperId },
+          data: {
+            numberOfQuestions: {
+              decrement: 1,
+            },
+          },
+        });
+
+        return newQuestion;
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
