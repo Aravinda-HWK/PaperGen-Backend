@@ -52,4 +52,9 @@ export class PaperController {
   async findByTeacher(@Query() data: { teacherId: number }) {
     return await this.paperService.findByTeacher(data.teacherId);
   }
+
+  @Get('paper-by-students')
+  async findByStudent(@Query() data: { studentId: number }) {
+    return await this.paperService.findByStudent(data.studentId);
+  }
 }

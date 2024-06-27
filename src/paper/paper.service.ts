@@ -159,4 +159,26 @@ export class PaperService {
       throw error;
     }
   }
+
+  // Get all the papers for a given student ID.
+  async findByStudent(id: number) {
+    try {
+      return await this.prisma.paper.findMany({
+        where: {
+          classroom: {
+            students: {
+              some: {
+                id: parseInt(id.toString()),
+              },
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
+  }
 }
