@@ -163,7 +163,7 @@ export class PaperService {
   // Get all the papers for a given student ID.
   async findByStudent(id: number) {
     try {
-      return await this.prisma.paper.findMany({
+      let paperList = await this.prisma.paper.findMany({
         where: {
           classroom: {
             students: {
@@ -174,6 +174,23 @@ export class PaperService {
           },
         },
       });
+
+      // Check if the end time of the paper has passed, if passed remove those papers from the list
+      paperList = paperList.filter((paper) => {
+        return new Date(paper.endTime) > new Date();
+      });
+
+      // Find the number of question in each paper
+      for (let i = 0; i < paperList.length; i++) {
+        const questions = await this.prisma.question.findMany({
+          where: {
+            paperId: paperList[i].id,
+          },
+        });
+        paperList[i]['usedNumberOfQuestions'] = questions.length;
+      }
+
+      return paperList;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw new ForbiddenException(error.message);
