@@ -180,7 +180,7 @@ export class PaperService {
         return new Date(paper.endTime) > new Date();
       });
 
-      // Find the number of question in each paper
+      // Find the number of question in each paper and the classroom
       for (let i = 0; i < paperList.length; i++) {
         const questions = await this.prisma.question.findMany({
           where: {
@@ -188,6 +188,14 @@ export class PaperService {
           },
         });
         paperList[i]['usedNumberOfQuestions'] = questions.length;
+
+        const classroom = await this.prisma.classroom.findUnique({
+          where: {
+            id: paperList[i].classroomId,
+          },
+        });
+
+        paperList[i]['classroom'] = classroom;
       }
 
       return paperList;
