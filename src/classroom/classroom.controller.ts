@@ -56,4 +56,9 @@ export class ClassroomController {
   async deleteStudent(@Body() data: { classroomID: any; studentID: any }) {
     return this.classroomService.deleteStudent(data);
   }
+
+  @Get('classroom-by-student')
+  async getClassroomByStudent(@Query() data: { studentID: any }) {
+    return this.classroomService.getStudentClassrooms(data.studentID);
+  }
 }

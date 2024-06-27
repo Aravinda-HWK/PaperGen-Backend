@@ -194,4 +194,21 @@ export class ClassroomService {
       throw new ForbiddenException('Student is not in the classroom');
     }
   }
+
+  // Get all the classrooms for a student
+  async getStudentClassrooms(studentID: any) {
+    // Change the student Id to number
+    studentID = parseInt(studentID);
+    let classroomList = await this.prisma.classroom.findMany({
+      where: { students: { some: { id: studentID } } },
+    });
+
+    for (let i = 0; i < classroomList.length; i++) {
+      const teacher = await this.prisma.teacher.findUnique({
+        where: { id: classroomList[i].teacherId },
+      });
+      classroomList[i]['teacher'] = teacher;
+    }
+    return classroomList;
+  }
 }
