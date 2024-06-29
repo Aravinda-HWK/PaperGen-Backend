@@ -46,8 +46,9 @@ export class PaperService {
   }
 
   // Add a new method to the PaperService class that retrieves a paper by ID.
-  async findOne(id: number) {
+  async findOne(paperId: number) {
     try {
+      const id = Number(paperId);
       const result = await this.prisma.paper.findUnique({
         where: {
           id,
@@ -57,6 +58,15 @@ export class PaperService {
       if (!result) {
         throw new ForbiddenException('Paper not found');
       } else {
+        // Find the number of question in the paper and the classroom
+        const questions = await this.prisma.question.findMany({
+          where: {
+            paperId: result.id,
+          },
+        });
+
+        result['usedNumberOfQuestions'] = questions.length;
+
         return result;
       }
     } catch (error) {

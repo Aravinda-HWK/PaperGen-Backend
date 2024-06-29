@@ -25,7 +25,7 @@ export class PaperController {
   }
 
   @Get('paper-by-id')
-  async findOne(@Body() data: { id: number }) {
+  async findOne(@Query() data: { id: number }) {
     return await this.paperService.findOne(data.id);
   }
 
