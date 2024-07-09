@@ -40,11 +40,14 @@ export class QuestionService {
 
   // Add a new method to the QuestionService class that retrieves all questions for a paper.
   async findByPaperId(paperId: number) {
-    return await this.prisma.question.findMany({
+    const id = Number(paperId);
+    const response = await this.prisma.question.findMany({
       where: {
-        paperId,
+        paperId: id,
       },
     });
+
+    return response;
   }
 
   // Add a new method to the QuestionService class that retrieves a question by ID.

@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { QuestionService } from './question.service';
 
 @Controller('question')
@@ -11,7 +19,7 @@ export class QuestionController {
   }
 
   @Get('by-paper-id')
-  async findByPaperId(@Body() data: { paperId: number }) {
+  async findByPaperId(@Query() data: { paperId: number }) {
     return await this.questionService.findByPaperId(data.paperId);
   }
 
