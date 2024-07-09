@@ -23,7 +23,7 @@ export class ResultService {
       let score = 0;
 
       if (question.length !== data.answer.length) {
-        throw new ForbiddenException('There are missing answers');
+        throw new ForbiddenException('Invalid number of answers');
       }
 
       for (let i = 0; i < question.length; i++) {
