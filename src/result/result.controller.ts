@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ResultService } from './result.service';
 
 interface Answer {
@@ -38,7 +46,7 @@ export class ResultController {
   }
 
   @Get('student-results')
-  async getStudentAllResults(@Body() data: { studentID: any }) {
+  async getStudentAllResults(@Query() data: { studentID: any }) {
     return this.resultService.getStudentAllResults(data.studentID);
   }
 

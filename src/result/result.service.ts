@@ -91,11 +91,38 @@ export class ResultService {
 
   // Get all results for a student
   async getStudentAllResults(studentID: any) {
-    return this.prisma.result.findMany({
+    const id = parseInt(studentID);
+    const resultList = this.prisma.result.findMany({
       where: {
-        studentId: studentID,
+        studentId: id,
       },
     });
+
+    // Add the paper name and description to the result
+    // Get the number of questions in the paper
+    const results = await Promise.all(
+      (await resultList).map(async (result) => {
+        const paper = await this.prisma.paper.findUnique({
+          where: {
+            id: result.paperId,
+          },
+        });
+
+        const questions = await this.prisma.question.findMany({
+          where: {
+            paperId: result.paperId,
+          },
+        });
+        return {
+          ...result,
+          paperName: paper?.name,
+          paperDescription: paper?.description,
+          numberOfQuestions: questions.length,
+        };
+      }),
+    );
+
+    return results;
   }
 
   // Get the highest score for a paper given the paper ID
