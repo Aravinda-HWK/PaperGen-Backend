@@ -1,6 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import Groq from 'groq-sdk';
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 interface Answer {
   questionId: number;
@@ -165,5 +168,19 @@ export class ResultService {
       paperName: paper?.name,
       paperDescription: paper?.description,
     };
+  }
+
+  // Get the review from model
+  async getReview(question: string) {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: 'user',
+          content: question,
+        },
+      ],
+      model: 'llama3-8b-8192',
+    });
+    return chatCompletion.choices[0]?.message?.content || '';
   }
 }

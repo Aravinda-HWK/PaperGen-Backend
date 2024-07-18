@@ -59,4 +59,9 @@ export class ResultController {
   async getAnswerList(@Query() data: { resultID: any }) {
     return this.resultService.getAnswers(data.resultID);
   }
+
+  @Post('model-review')
+  async modelReview(@Body() data: { question: string }) {
+    return this.resultService.getReview(data.question);
+  }
 }
