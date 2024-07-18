@@ -136,4 +136,34 @@ export class ResultService {
       },
     });
   }
+
+  // Fetch given answers and real answers for given result id
+  async getAnswers(id: any) {
+    const resultID = parseInt(id);
+    const result = await this.prisma.result.findUnique({
+      where: {
+        id: resultID,
+      },
+    });
+
+    const paper = await this.prisma.paper.findUnique({
+      where: {
+        id: result?.paperId,
+      },
+    });
+
+    const questions = await this.prisma.question.findMany({
+      where: {
+        paperId: result?.paperId,
+      },
+    });
+
+    return {
+      questions: questions.map((q) => q.content),
+      answers: result?.answers,
+      realAnswers: questions.map((q) => q.correctAnswer),
+      paperName: paper?.name,
+      paperDescription: paper?.description,
+    };
+  }
 }

@@ -54,4 +54,9 @@ export class ResultController {
   async getHighestScore(@Body() data: { paperID: any }) {
     return this.resultService.getHighestScore(data.paperID);
   }
+
+  @Get('answer-list')
+  async getAnswerList(@Query() data: { resultID: any }) {
+    return this.resultService.getAnswers(data.resultID);
+  }
 }
