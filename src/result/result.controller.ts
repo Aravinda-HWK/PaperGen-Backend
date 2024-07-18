@@ -61,7 +61,7 @@ export class ResultController {
   }
 
   @Post('model-review')
-  async modelReview(@Body() data: { question: string }) {
-    return this.resultService.getReview(data.question);
+  async modelReview(@Body() data: { question: string; answer: string }) {
+    return this.resultService.getReview(data.question, data.answer);
   }
 }

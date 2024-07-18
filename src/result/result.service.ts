@@ -171,16 +171,20 @@ export class ResultService {
   }
 
   // Get the review from model
-  async getReview(question: string) {
+  async getReview(question: string, answer: string) {
+    const prompt = `Given the question:\n"${question}"\n\nand the answer:\n"${answer}"\n\nProvide a detailed explanation of why this answer is correct, including any relevant information and context.`;
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
           role: 'user',
-          content: question,
+          content: prompt,
         },
       ],
       model: 'llama3-8b-8192',
     });
-    return chatCompletion.choices[0]?.message?.content || '';
+    const response = {
+      answer: chatCompletion.choices[0]?.message?.content || '',
+    };
+    return response;
   }
 }
