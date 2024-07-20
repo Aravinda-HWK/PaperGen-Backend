@@ -80,5 +80,5 @@ model result {
   paperId     Int
   paper       paper    @relation(fields: [paperId], references: [id])
   score       Int
-  answers     String[]
+  answers     Json[]
 }
