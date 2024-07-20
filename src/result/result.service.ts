@@ -14,10 +14,10 @@ interface Answer {
 export class ResultService {
   constructor(private prisma: PrismaService) {}
 
-  // Create a new result
   async create(data: { studentID: any; paperID: any; answer: Answer[] }) {
     try {
-      const question = await this.prisma.question.findMany({
+      // Fetch all questions for the specified paper
+      const questions = await this.prisma.question.findMany({
         where: {
           paperId: data.paperID,
         },
@@ -25,24 +25,40 @@ export class ResultService {
 
       let score = 0;
 
-      if (question.length !== data.answer.length) {
+      // Ensure the number of answers matches the number of questions
+      if (questions.length !== data.answer.length) {
         throw new ForbiddenException('Invalid number of answers');
       }
 
-      for (let i = 0; i < question.length; i++) {
-        if (question[i].id == data.answer[i].questionId)
-          if (question[i].correctAnswer === data.answer[i].answer) {
-            score++;
-          }
+      // Create a map of questionId to correctAnswer for easy lookup
+      const questionMap = new Map(
+        questions.map((question) => [question.id, question.correctAnswer]),
+      );
+
+      // Iterate through the answers and calculate the score
+      for (const ans of data.answer) {
+        const correctAnswer = questionMap.get(ans.questionId);
+        if (correctAnswer === undefined) {
+          throw new ForbiddenException('Invalid question ID in answers');
+        }
+        if (correctAnswer === ans.answer) {
+          score++;
+        }
       }
+
+      // Create the result entry with question IDs and answers
       const result = await this.prisma.result.create({
         data: {
           studentId: data.studentID,
           paperId: data.paperID,
           score,
-          answers: [...data.answer.map((a) => a.answer)],
+          answers: data.answer.map((a) => ({
+            questionId: a.questionId,
+            answer: a.answer,
+          })),
         },
       });
+
       return result;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -140,31 +156,54 @@ export class ResultService {
     });
   }
 
-  // Fetch given answers and real answers for given result id
   async getAnswers(id: any) {
     const resultID = parseInt(id);
+
+    // Fetch the result using the given resultID
     const result = await this.prisma.result.findUnique({
       where: {
         id: resultID,
       },
     });
 
+    if (!result) {
+      throw new Error('Result not found');
+    }
+
+    // Fetch the paper associated with the result
     const paper = await this.prisma.paper.findUnique({
       where: {
-        id: result?.paperId,
+        id: result.paperId,
       },
     });
 
+    // Fetch all questions associated with the paper
     const questions = await this.prisma.question.findMany({
       where: {
-        paperId: result?.paperId,
+        paperId: result.paperId,
       },
     });
 
+    // Extract given answers from the result
+    const givenAnswers = result.answers as Array<{
+      questionId: number;
+      answer: string;
+    }>;
+
+    // Create a map of questionId to the corresponding given answer
+    const answerMap = new Map(
+      givenAnswers.map((a) => [a.questionId, a.answer]),
+    );
+
+    // Ensure the lists are aligned and matched
+    const questionContents = questions.map((q) => q.content);
+    const realAnswers = questions.map((q) => q.correctAnswer);
+    const alignedGivenAnswers = questions.map((q) => answerMap.get(q.id) || '');
+
     return {
-      questions: questions.map((q) => q.content),
-      answers: result?.answers,
-      realAnswers: questions.map((q) => q.correctAnswer),
+      questions: questionContents,
+      answers: alignedGivenAnswers,
+      realAnswers,
       paperName: paper?.name,
       paperDescription: paper?.description,
     };
