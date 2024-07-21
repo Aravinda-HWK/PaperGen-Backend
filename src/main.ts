@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as cors from 'cors';
+import { baseURL } from './config/baseURL';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,7 +10,7 @@ async function bootstrap() {
   // Enable CORS
   app.use(
     cors({
-      origin: 'http://localhost:3000', // Replace with your frontend URL
+      origin: baseURL, // Replace with your frontend URL
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true, // Allow cookies
     }),
