@@ -47,4 +47,9 @@ export class QuestionController {
   async findByClassroom(@Body() data: { classroomId: number }) {
     return await this.questionService.findByClassroom(data.classroomId);
   }
+
+  @Post('correct-question')
+  async correctQuestion(@Body() data: { question: string }) {
+    return await this.questionService.removeGrammerMistakes(data.question);
+  }
 }

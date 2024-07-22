@@ -1,6 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import Groq from 'groq-sdk';
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 @Injectable()
 export class QuestionService {
@@ -150,5 +153,24 @@ export class QuestionService {
     } catch (error) {
       throw error;
     }
+  }
+
+  // Add a method to remove grammer mistakes from the question
+  async removeGrammerMistakes(question: string) {
+    const prompt = `Correct the grammar of the following question and return only the corrected question:\n\n${question}`;
+
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      model: 'llama3-8b-8192',
+    });
+    const response = {
+      answer: chatCompletion.choices[0]?.message?.content || '',
+    };
+    return response;
   }
 }
