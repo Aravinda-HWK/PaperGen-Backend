@@ -70,7 +70,15 @@ export class ClassroomService {
 
   // Get all classrooms
   async getClassrooms() {
-    return await this.prisma.classroom.findMany();
+    // Need to get the teacher details along with the classroom details
+    const classrooms = await this.prisma.classroom.findMany();
+    for (let i = 0; i < classrooms.length; i++) {
+      const teacher = await this.prisma.teacher.findUnique({
+        where: { id: classrooms[i].teacherId },
+      });
+      classrooms[i]['teacher'] = teacher;
+    }
+    return classrooms;
   }
 
   // Add a student to a classroom
