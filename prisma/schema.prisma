@@ -91,6 +91,7 @@ model request {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  message     String
   studentId   Int
   student     student  @relation(fields: [studentId], references: [id])
   classroomId Int
