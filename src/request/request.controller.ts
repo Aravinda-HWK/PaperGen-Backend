@@ -15,7 +15,9 @@ export class RequestController {
   constructor(private requestService: RequestService) {}
 
   @Post('create')
-  async create(@Body() data: { studentId: number; classroomId: number }) {
+  async create(
+    @Body() data: { studentId: number; classroomId: number; message: string },
+  ) {
     return await this.requestService.create(data);
   }
 }

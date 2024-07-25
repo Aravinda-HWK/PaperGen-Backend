@@ -7,13 +7,18 @@ export class RequestService {
   constructor(private prisma: PrismaService) {}
 
   // Add a new method to the RequestService class that creates a new request.
-  async create(data: { studentId: number; classroomId: number }) {
+  async create(data: {
+    studentId: number;
+    classroomId: number;
+    message: string;
+  }) {
     try {
       return await this.prisma.$transaction(async (prisma) => {
         const newRequest = await prisma.request.create({
           data: {
             student: { connect: { id: data.studentId } },
             classroom: { connect: { id: data.classroomId } },
+            message: data.message,
           },
         });
 
