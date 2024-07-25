@@ -13,11 +13,13 @@ export class RequestService {
     message: string;
   }) {
     try {
+      const studentId = Number(data.studentId);
+      const classroomId = Number(data.classroomId);
       return await this.prisma.$transaction(async (prisma) => {
         const newRequest = await prisma.request.create({
           data: {
-            student: { connect: { id: data.studentId } },
-            classroom: { connect: { id: data.classroomId } },
+            student: { connect: { id: studentId } },
+            classroom: { connect: { id: classroomId } },
             message: data.message,
           },
         });
