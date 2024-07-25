@@ -7,6 +7,7 @@ import { ClassroomModule } from './classroom/classroom.module';
 import { PaperModule } from './paper/paper.module';
 import { QuestionModule } from './question/question.module';
 import { ResultModule } from './result/result.module';
+import { RequestModule } from './request/request.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     PaperModule,
     QuestionModule,
     ResultModule,
+    RequestModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
 })
