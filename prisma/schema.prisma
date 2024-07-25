@@ -32,6 +32,8 @@ model student {
   description String?
   classrooms  classroom[]
   results     result[]
+
+  request request[]
 }
 
 model classroom {
@@ -44,6 +46,8 @@ model classroom {
   teacher     teacher  @relation(fields: [teacherId], references: [id])
   students    student[]
   papers      paper[]
+
+  request request[]
 }
 
 model paper {
@@ -81,4 +85,14 @@ model result {
   paper       paper    @relation(fields: [paperId], references: [id])
   score       Int
   answers     Json[]
+}
+
+model request {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  studentId   Int
+  student     student  @relation(fields: [studentId], references: [id])
+  classroomId Int
+  classroom   classroom @relation(fields: [classroomId], references: [id])
 }
