@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
-import e from 'express';
 
 @Module({
   controllers: [QuestionController],
