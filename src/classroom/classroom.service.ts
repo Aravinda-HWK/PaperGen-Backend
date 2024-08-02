@@ -69,9 +69,37 @@ export class ClassroomService {
   }
 
   // Get all classrooms
-  async getClassrooms() {
+  async getClassrooms(studentId: any) {
+    const studentID = parseInt(studentId);
     // Need to get the teacher details along with the classroom details
     const classrooms = await this.prisma.classroom.findMany();
+
+    // Remove if the student is already in the classroom
+    for (let i = 0; i < classrooms.length; i++) {
+      const students = await this.prisma.student.findMany({
+        where: { classrooms: { some: { id: classrooms[i].id } } },
+      });
+      for (let j = 0; j < students.length; j++) {
+        if (students[j].id === studentID) {
+          classrooms.splice(i, 1);
+          i--;
+          break;
+        }
+      }
+    }
+
+    // Remove if the student has already sent a request to join the classroom
+    for (let i = 0; i < classrooms.length; i++) {
+      const requests = await this.prisma.request.findMany({
+        where: { studentId: studentID, classroomId: classrooms[i].id },
+      });
+      if (requests.length > 0) {
+        classrooms.splice(i, 1);
+        i--;
+      }
+    }
+
+    // Add the teacher details to the classroom
     for (let i = 0; i < classrooms.length; i++) {
       const teacher = await this.prisma.teacher.findUnique({
         where: { id: classrooms[i].teacherId },

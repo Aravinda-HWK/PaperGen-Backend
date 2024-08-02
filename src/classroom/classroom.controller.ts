@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ClassroomService } from './classroom.service';
+import { QuestionController } from 'src/question/question.controller';
 
 @Controller('classroom')
 export class ClassroomController {
@@ -26,8 +27,8 @@ export class ClassroomController {
   }
 
   @Get('all-classrooms')
-  async getClassrooms() {
-    return this.classroomService.getClassrooms();
+  async getClassrooms(@Query() data: { studentID: any }) {
+    return this.classroomService.getClassrooms(data.studentID);
   }
 
   @Put('add-student')
